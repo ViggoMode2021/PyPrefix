@@ -10,8 +10,6 @@ import cymruwhois
 import socket
 from cymruwhois import Client
 
-#ip prefix-list TEST permit ______________ ge __ le __
-
 def prefix_list_checker():
 
     pyprefix_title = pyfiglet.figlet_format("PyPrefix")
@@ -35,9 +33,9 @@ def prefix_list_checker():
     while True:
 
         if ip_address(IPNetwork(subnet).broadcast).is_private:
-            print(f"{subnet} is a private IPV4 address range.")
+            print(f"\n{subnet} is a private IPV4 address range.")
         else:
-            print(f"{subnet} is a public IPV4 address range.")
+            print(f"\n{subnet} is a public IPV4 address range.")
 
         socket_client = Client()
 
@@ -51,9 +49,16 @@ def prefix_list_checker():
 
         prefix_owner = broadcast_of_prefix_network_search.owner
 
-        print(f"\nThe prefix {subnet} belongs to Autonomous System # {prefix_asn} {prefix_owner}.\n")
+        if prefix_asn == "NA" and prefix_owner == "NA":
+            print(f"\nThe prefix {subnet} does not belong to an Autonomous System, according to Cymruwhois.\n")
+            break
+        else:
+            print(f"\nThe prefix {subnet} belongs to Autonomous System # {prefix_asn} {prefix_owner}.\n")
+            break
 
-        print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+    print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+
+    while True:
 
         print("Input a greater than mask length.\n")
 

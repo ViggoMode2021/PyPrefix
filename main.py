@@ -2,6 +2,7 @@
 
 # Author: Ryan Viglione
 
+from ipaddress import *
 import ipaddress
 from netaddr import IPNetwork
 import pyfiglet
@@ -13,25 +14,30 @@ from cymruwhois import Client
 
 def prefix_list_checker():
 
-    PyPrefix_title = pyfiglet.figlet_format("PyPrefix")
-    print(PyPrefix_title)
+    pyprefix_title = pyfiglet.figlet_format("PyPrefix")
+    print(pyprefix_title)
 
     print("Input a IPV4 subnet in CIDR notation to test a prefix list.\n")
 
-    print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n")
+    print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n")
 
     while True:
         subnet = input(
-            "Input here: ")  # user specifies supernet to validate prefixes against
+            "Input here: ")  # User specifies subnet to validate prefixes against
 
         try:
-            ipaddress.ip_network(subnet)  # validate supernet formatting to be a prefix with subnet expressed in CIDR
-            break  # break loop if above condition is met
-        except ValueError:  # throw exception if prefix is not in prefix + CIDR format (example - 192.168.10.0/24)
-            print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+            ipaddress.ip_network(subnet)  # Validate subnet format to be a prefix with mask in CIDR
+            break
+        except ValueError:  # Throw exception if prefix is not in prefix + CIDR format (example - 192.168.10.0/24)
+            print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
             print(f"\n{subnet} is not a valid subnet with CIDR notation.\n")
 
     while True:
+
+        if ip_address(IPNetwork(subnet).broadcast).is_private:
+            print(f"{subnet} is a private IPV4 address range.")
+        else:
+            print(f"{subnet} is a public IPV4 address range.")
 
         socket_client = Client()
 

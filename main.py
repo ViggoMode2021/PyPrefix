@@ -10,6 +10,8 @@ import cymruwhois
 import socket
 from cymruwhois import Client
 
+# MAKE SURE TO FIX NOTED LINES TO MAKE SURE THAT THE GREATER THAN MASK IS NOT LARGER THAN REGULAR SUBNET MASK
+
 def prefix_list_checker():
 
     pyprefix_title = pyfiglet.figlet_format("PyPrefix")
@@ -60,18 +62,21 @@ def prefix_list_checker():
 
     while True:
 
-        print("Input a greater than mask length.\n")
+        main_mask = int(subnet.split("/", 1)[1])
+
+        print(f"Input a greater than mask length that is less than {main_mask}.\n")
 
         greater_than_mask = (
             input(f"Input here: \n"))  # user specifies greater than mask
 
         try:
-            greater_than_mask = int(greater_than_mask)
-            if 0 <= greater_than_mask <= 32:
-                break
-            elif greater_than_mask > 32:
+            if main_mask > int(greater_than_mask):
+                print(f"% Invalid prefix range for {subnet}, make sure: len < ge-value <= le-value")
+            elif int(greater_than_mask) > 32:
                 print(f"\nInput {greater_than_mask} is out of valid range.")
                 print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+            else:
+                break
         except ValueError:
             print(f"\n{greater_than_mask} is not a valid integer!")
 
@@ -145,7 +150,6 @@ def prefix_list_checker():
                 print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
             else:
                 print(f"No, {network} does not meet the criteria of {full_statement}\n.")
-
 
 if __name__ == "__main__":
     prefix_list_checker()

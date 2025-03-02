@@ -10,7 +10,10 @@ import cymruwhois
 import socket
 from cymruwhois import Client
 
-# MAKE SURE TO FIX NOTED LINES TO MAKE SURE THAT THE GREATER THAN MASK IS NOT LARGER THAN REGULAR SUBNET MASK
+# import ipaddress
+#
+# for i in ipaddress.ip_network('10.0.0.0/8').subnets(new_prefix=22):
+#     print(i)
 
 def prefix_list_checker():
 

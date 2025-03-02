@@ -64,7 +64,7 @@ def prefix_list_checker():
 
         main_mask = int(subnet.split("/", 1)[1])
 
-        print(f"Input a greater than mask length that is less than {main_mask}.\n")
+        print(f"Input a greater than mask length that is larger than {main_mask}.\n")
 
         greater_than_mask = (
             input(f"Input here: \n"))  # user specifies greater than mask
@@ -89,15 +89,15 @@ def prefix_list_checker():
         print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
 
         try:
-            less_than_mask = int(less_than_mask)
-            if 0 <= less_than_mask <= 32:
-                break
-            elif less_than_mask > 32:
-                print(f"Input {less_than_mask} is out of valid range.\n")
+            if main_mask > int(less_than_mask):
+                print(f"% Invalid prefix range for {subnet}, make sure: len < ge-value <= le-value")
+            elif int(less_than_mask) > 32:
+                print(f"\nInput {less_than_mask} is out of valid range.")
                 print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+            else:
+                break
         except ValueError:
-            print(f"{less_than_mask} is not a valid integer!\n")
-            print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+            print(f"\n{less_than_mask} is not a valid integer!")
 
     full_statement = f"ip prefix-list TEST permit {subnet} ge {greater_than_mask} le {less_than_mask}\n"
 

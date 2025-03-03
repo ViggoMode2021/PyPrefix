@@ -31,7 +31,7 @@ def prefix_list_checker():
             print(f"\n{subnet} is not a valid subnet with CIDR notation.\n")
 
     while True:
-        
+
         try:
             if ip_address(IPNetwork(subnet).broadcast).is_private:
                 print(f"\n{subnet} is a private IPV4 address range.")

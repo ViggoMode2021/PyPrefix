@@ -9,6 +9,7 @@ import pyfiglet
 import cymruwhois
 import socket
 from cymruwhois import Client
+import os
 
 # import ipaddress
 #
@@ -70,33 +71,35 @@ def prefix_list_checker():
         print(f"Input a greater than mask length that is larger than {main_mask}.\n")
 
         greater_than_mask = (
-            input(f"Input here: \n"))  # user specifies greater than mask
+            input(f"Input here: "))  # user specifies greater than mask
 
         try:
             if main_mask > int(greater_than_mask):
-                print(f"% Invalid prefix range for {subnet}, make sure: len < ge-value <= le-value")
+                print(f"\n% Invalid prefix range for {subnet}, make sure: len < ge-value <= le-value\n")
+                print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
             elif int(greater_than_mask) > 32:
-                print(f"\nInput {greater_than_mask} is out of valid range.")
+                print(f"Input {greater_than_mask} is out of valid range.\n")
                 print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
             else:
                 break
         except ValueError:
             print(f"\n{greater_than_mask} is not a valid integer!")
+            print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
 
     while True:
 
-        print("Input a less than mask length.\n")
-
-        less_than_mask = int(input(f"ip prefix-list TEST permit {subnet} ge {greater_than_mask} le __\n"))
-
         print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+
+        less_than_mask = input("Input a less than mask length: ")
+
 
         try:
             if main_mask > int(less_than_mask):
-                print(f"% Invalid prefix range for {subnet}, make sure: len < ge-value <= le-value")
+                print(f"% Invalid prefix range for {subnet}, make sure: len < ge-value <= le-value\n")
+            elif int(less_than_mask) < int(greater_than_mask):
+                print(f"% Invalid prefix range for {subnet}, make sure: len < ge-value <= le-value\n")
             elif int(less_than_mask) > 32:
                 print(f"\nInput {less_than_mask} is out of valid range.")
-                print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
             else:
                 break
         except ValueError:

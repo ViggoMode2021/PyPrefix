@@ -144,7 +144,7 @@ def prefix_list_checker():
         for network in subnet_lists:
             mask = int(network.split("/", 1)[1])
 
-            if IPNetwork(network) in IPNetwork(subnet) and greater_than_mask <= mask <= less_than_mask:
+            if IPNetwork(network) in IPNetwork(subnet) and int(greater_than_mask) <= int(mask) <= int(less_than_mask):
                 print(f"Yes, {network} is in {subnet} and meets the criteria of {full_statement}\n")
                 print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
                 subnet_lists.remove(subnet_inputs)

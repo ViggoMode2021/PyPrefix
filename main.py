@@ -10,16 +10,6 @@ import cymruwhois
 import socket
 from cymruwhois import Client
 
-a = []
-
-# Loop through a range of numbers and add them to the list
-for i in range(5):
-    a.append(i)
-
-# Print the list
-print(len(a))
-
-
 def prefix_list_checker():
 
     pyprefix_title = pyfiglet.figlet_format("PyPrefix")

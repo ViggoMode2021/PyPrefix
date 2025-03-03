@@ -9,12 +9,16 @@ import pyfiglet
 import cymruwhois
 import socket
 from cymruwhois import Client
-import os
 
-# import ipaddress
-#
-# for i in ipaddress.ip_network('10.0.0.0/8').subnets(new_prefix=22):
-#     print(i)
+a = []
+
+# Loop through a range of numbers and add them to the list
+for i in range(5):
+    a.append(i)
+
+# Print the list
+print(len(a))
+
 
 def prefix_list_checker():
 
@@ -37,11 +41,14 @@ def prefix_list_checker():
             print(f"\n{subnet} is not a valid subnet with CIDR notation.\n")
 
     while True:
-
-        if ip_address(IPNetwork(subnet).broadcast).is_private:
-            print(f"\n{subnet} is a private IPV4 address range.")
-        else:
-            print(f"\n{subnet} is a public IPV4 address range.")
+        
+        try:
+            if ip_address(IPNetwork(subnet).broadcast).is_private:
+                print(f"\n{subnet} is a private IPV4 address range.")
+            else:
+                print(f"\n{subnet} is a public IPV4 address range.")
+        except ValueError:
+            print(f"{subnet} could not be calculated as a valid address range.")
 
         socket_client = Client()
 
@@ -83,7 +90,7 @@ def prefix_list_checker():
             else:
                 break
         except ValueError:
-            print(f"\n{greater_than_mask} is not a valid integer!")
+            print(f"\n{greater_than_mask} is not a valid integer.")
             print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
 
     while True:
@@ -137,8 +144,6 @@ def prefix_list_checker():
 
             print(f"The prefix {subnet_inputs} belongs to Autonomous System # {prefix_asn} {prefix_owner}\n")
 
-            print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
-
         except ValueError:
             print(f"{subnet_inputs} is not a valid subnet with CIDR notation.\n")
 
@@ -148,14 +153,16 @@ def prefix_list_checker():
             mask = int(network.split("/", 1)[1])
 
             if IPNetwork(network) in IPNetwork(subnet) and int(greater_than_mask) <= int(mask) <= int(less_than_mask):
-                print(f"Yes, {network} is in {subnet} and meets the criteria of {full_statement}\n")
+                print(f"Yes, {network} is in {subnet} and meets the criteria of {full_statement}")
                 print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
                 subnet_lists.remove(subnet_inputs)
             elif IPNetwork(network) in IPNetwork(subnet):
-                print(f"The {network} network is in {subnet}, but doesn't meet the comparison operator criteria.\n")
+                print(f"The {network} network is in {subnet}, but doesn't meet the comparison operator criteria.")
                 print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
             else:
                 print(f"No, {network} does not meet the criteria of {full_statement}\n.")
+                print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+
 
 if __name__ == "__main__":
     prefix_list_checker()

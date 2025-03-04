@@ -6,7 +6,6 @@ from ipaddress import *
 import ipaddress
 from netaddr import IPNetwork
 import pyfiglet
-import cymruwhois
 import socket
 from cymruwhois import Client
 

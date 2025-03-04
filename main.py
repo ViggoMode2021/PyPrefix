@@ -155,21 +155,6 @@ def prefix_list_checker():
         try:
             ipaddress.ip_network(subnet_inputs)
             subnet_lists.append(subnet_inputs)
-
-            socket_client = Client()
-
-            prefix_network = IPNetwork(subnet_inputs)
-
-            broadcast_of_prefix_network = prefix_network.broadcast
-
-            broadcast_of_prefix_network_search = socket_client.lookup(broadcast_of_prefix_network)
-
-            prefix_asn = broadcast_of_prefix_network_search.asn
-
-            prefix_owner = broadcast_of_prefix_network_search.owner
-
-            print(f"The prefix {subnet_inputs} belongs to Autonomous System # {prefix_asn} {prefix_owner}\n")
-
         except ValueError:
             print(f"{subnet_inputs} is not a valid subnet with CIDR notation.\n")
 

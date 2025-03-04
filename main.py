@@ -20,6 +20,7 @@ def prefix_list_checker():
     print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n")
 
     while True:
+
         subnet = input(
             "Input here: ")  # User specifies subnet to validate prefixes against
 
@@ -40,10 +41,8 @@ def prefix_list_checker():
         try:
             if ip_address(IPNetwork(subnet).broadcast).is_private:
                 print(f"\n{subnet} is a private IPV4 address range.")
-                break
             else:
                 print(f"\n{subnet} is a public IPV4 address range.")
-                break
         except ValueError:
             print(f"{subnet} could not be calculated as a valid address range.")
 
@@ -64,6 +63,36 @@ def prefix_list_checker():
             break
         else:
             print(f"\nThe prefix {subnet} belongs to Autonomous System # {prefix_asn} {prefix_owner}.\n")
+            break
+
+    while True:
+
+        question = input(f"Would you like to see the subnets that are within {subnet}? ")
+
+        if question == "yes":
+
+            main_mask = int(subnet.split("/", 1)[1])
+
+            potential_subnets = []
+
+            try:
+                for x in range(main_mask, 33): # Enumerate parent loop with subnet mask lengths that range from main mask to 32.
+                    for i in ipaddress.ip_network(subnet).subnets(new_prefix=x): # Find all potential subnets in main subnet
+                        i = str(i)
+                        print(i)
+                        potential_subnets.append(i)
+                        subnet_filename = subnet.replace("/", "-")
+                        file1 = open("subnets-for-%s.txt" % subnet_filename, "w")
+                        file1.writelines('\n'.join(potential_subnets) + '\n')
+                        file1.close()
+                potential_subnets_total = len(potential_subnets)
+                print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+                print(f"\nThere are a total of {potential_subnets_total} potential subnets within supernet of {subnet}.")
+                break
+            except ValueError:
+                print(f"Cannot generate list of potential subnets encapsulated in {subnet}.")
+
+        else:
             break
 
     print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
@@ -115,6 +144,7 @@ def prefix_list_checker():
     subnet_lists = []
 
     while True:
+
         subnet_inputs = input(f"Add prefixes to check against {full_statement}\n")
 
         print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
@@ -147,7 +177,7 @@ def prefix_list_checker():
 
         for network in subnet_lists:
             mask = int(network.split("/", 1)[1])
-            
+
             if IPNetwork(network) in IPNetwork(subnet) and int(greater_than_mask) <= int(mask) <= int(less_than_mask):
                 print(f"Yes, {network} is in {subnet} and meets the criteria of {full_statement}")
                 print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")

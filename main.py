@@ -23,6 +23,11 @@ def prefix_list_checker():
         subnet = input(
             "Input here: ")  # User specifies subnet to validate prefixes against
 
+        subnet_cidr = subnet[-3:]
+
+        if subnet_cidr == "/31" or subnet_cidr == "/32":
+            print("Subnet cannot be a /31 or /32. Changing subnet to a /30.")
+            subnet = subnet[:-3] + "/30"
         try:
             ipaddress.ip_network(subnet)  # Validate subnet format to be a prefix with mask in CIDR
             break
@@ -35,8 +40,10 @@ def prefix_list_checker():
         try:
             if ip_address(IPNetwork(subnet).broadcast).is_private:
                 print(f"\n{subnet} is a private IPV4 address range.")
+                break
             else:
                 print(f"\n{subnet} is a public IPV4 address range.")
+                break
         except ValueError:
             print(f"{subnet} could not be calculated as a valid address range.")
 
@@ -89,7 +96,6 @@ def prefix_list_checker():
 
         less_than_mask = input("Input a less than mask length: ")
 
-
         try:
             if main_mask > int(less_than_mask):
                 print(f"% Invalid prefix range for {subnet}, make sure: len < ge-value <= le-value\n")
@@ -141,7 +147,7 @@ def prefix_list_checker():
 
         for network in subnet_lists:
             mask = int(network.split("/", 1)[1])
-
+            
             if IPNetwork(network) in IPNetwork(subnet) and int(greater_than_mask) <= int(mask) <= int(less_than_mask):
                 print(f"Yes, {network} is in {subnet} and meets the criteria of {full_statement}")
                 print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")

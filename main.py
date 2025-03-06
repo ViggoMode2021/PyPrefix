@@ -66,39 +66,8 @@ def prefix_list_checker():
                 break
 
         except:
-            print("Could not connect to Cymruwhois.")
-
-    while True:
-
-        question = input(f"Would you like to see the subnets that are within {subnet}? ")
-
-        main_mask = int(subnet.split("/", 1)[1])
-
-        if question == "yes" or "y" and main_mask > 20:
-
-            potential_subnets = []
-
-            try:
-                for x in range(main_mask, 33): # Enumerate parent loop with subnet mask lengths that range from main mask to 32.
-                    for i in ipaddress.ip_network(subnet).subnets(new_prefix=x): # Find all potential subnets in main subnet
-                        i = str(i)
-                        print(i)
-                        potential_subnets.append(i)
-                        subnet_filename = subnet.replace("/", "-")
-                        file1 = open("subnets-for-%s.txt" % subnet_filename, "w")
-                        file1.writelines('\n'.join(potential_subnets) + '\n')
-                        file1.close()
-                potential_subnets_total = len(potential_subnets)
-                print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
-                print(f"\nThere are a total of {potential_subnets_total} potential subnets within supernet of {subnet}.")
-                break
-            except ValueError:
-                print(f"Cannot generate list of potential subnets encapsulated in {subnet}.")
-
-        else:
+            print("Could not connect to Cymruwhois to look up autonomous system.")
             break
-
-    print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
 
     while True:
 
@@ -145,6 +114,34 @@ def prefix_list_checker():
     print(full_statement)
 
     subnet_lists = []
+
+    while True:
+
+        question = input(f"Would you like to see the subnets within {full_statement}? ")
+
+        if question == "yes" or "y":
+
+            potential_subnets = []
+
+        else:
+            break
+
+        try:
+            for x in range(int(greater_than_mask), int(less_than_mask)): # Enumerate parent loop with subnet mask lengths that range from main mask to 32.
+                for i in ipaddress.ip_network(subnet).subnets(new_prefix=x): # Find all potential subnets in main subnet
+                    i = str(i)
+                    print(i)
+                    potential_subnets.append(i)
+                    subnet_filename = subnet.replace("/", "-")
+                    file1 = open("subnets-for-%s.txt" % subnet_filename, "w")
+                    file1.writelines('\n'.join(potential_subnets) + '\n')
+                    file1.close()
+            potential_subnets_total = len(potential_subnets)
+            print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+            print(f"\nThere are a total of {potential_subnets_total} potential subnets within supernet of {subnet}.")
+            break
+        except ValueError:
+            print(f"Cannot generate list of potential subnets encapsulated in {subnet}.")
 
     while True:
 

@@ -45,32 +45,36 @@ def prefix_list_checker():
         except ValueError:
             print(f"{subnet} could not be calculated as a valid address range.")
 
-        socket_client = Client()
+        try:
+            socket_client = Client()
 
-        prefix_network = IPNetwork(subnet)
+            prefix_network = IPNetwork(subnet)
 
-        broadcast_of_prefix_network = prefix_network.broadcast
+            broadcast_of_prefix_network = prefix_network.broadcast
 
-        broadcast_of_prefix_network_search = socket_client.lookup(broadcast_of_prefix_network)
+            broadcast_of_prefix_network_search = socket_client.lookup(broadcast_of_prefix_network)
 
-        prefix_asn = broadcast_of_prefix_network_search.asn
+            prefix_asn = broadcast_of_prefix_network_search.asn
 
-        prefix_owner = broadcast_of_prefix_network_search.owner
+            prefix_owner = broadcast_of_prefix_network_search.owner
 
-        if prefix_asn == "NA" and prefix_owner == "NA":
-            print(f"\nThe prefix {subnet} does not belong to an Autonomous System, according to Cymruwhois.\n")
-            break
-        else:
-            print(f"\nThe prefix {subnet} belongs to Autonomous System # {prefix_asn} {prefix_owner}.\n")
-            break
+            if prefix_asn == "NA" and prefix_owner == "NA":
+                print(f"\nThe prefix {subnet} does not belong to an Autonomous System, according to Cymruwhois.\n")
+                break
+            else:
+                print(f"\nThe prefix {subnet} belongs to Autonomous System # {prefix_asn} {prefix_owner}.\n")
+                break
+
+        except:
+            print("Could not connect to Cymruwhois.")
 
     while True:
 
         question = input(f"Would you like to see the subnets that are within {subnet}? ")
 
-        if question == "yes":
+        main_mask = int(subnet.split("/", 1)[1])
 
-            main_mask = int(subnet.split("/", 1)[1])
+        if question == "yes" or "y" and main_mask > 20:
 
             potential_subnets = []
 

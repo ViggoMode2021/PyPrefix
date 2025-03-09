@@ -8,10 +8,11 @@ from netaddr import IPNetwork
 import pyfiglet
 import socket
 from cymruwhois import Client
+from pathlib import Path
 
 def prefix_list_checker():
 
-    pyprefix_title = pyfiglet.figlet_format("PyPrefix")
+    pyprefix_title = pyfiglet.figlet_format("PyPrefix") # Print logo for PyPrefix
     print(pyprefix_title)
 
     print("Input a IPV4 subnet in CIDR notation to test a prefix list.\n")
@@ -25,7 +26,7 @@ def prefix_list_checker():
 
         subnet_cidr = subnet[-3:]
 
-        if subnet_cidr == "/31" or subnet_cidr == "/32":
+        if subnet_cidr == "/31" or subnet_cidr == "/32": # Subnet must be /30 or larger (smaller integer mask)
             print("Subnet cannot be a /31 or /32. Changing subnet to a /30.")
             subnet = subnet[:-3] + "/30"
         try:
@@ -43,14 +44,15 @@ def prefix_list_checker():
             else:
                 print(f"\n{subnet} is a public IPV4 address range.")
         except ValueError:
-            print(f"{subnet} could not be calculated as a valid address range.")
+            print(f"{subnet} could not be calculated as a valid address range.") # This won't be executed due to above try/except block
 
         try:
-            socket_client = Client()
+            socket_client = Client() # Establish socket client
 
-            prefix_network = IPNetwork(subnet)
+            prefix_network = IPNetwork(subnet) # Convert subnet variable to an IPNetwork object type
 
-            broadcast_of_prefix_network = prefix_network.broadcast
+            broadcast_of_prefix_network = prefix_network.broadcast # Find broadcast address of network, in order to find
+            # ASN and corresponding organization. IPNetwork cannot look up this info with a prefix in CIDR notation.
 
             broadcast_of_prefix_network_search = socket_client.lookup(broadcast_of_prefix_network)
 
@@ -66,14 +68,16 @@ def prefix_list_checker():
                 break
 
         except:
-            print("Could not connect to Cymruwhois to look up autonomous system.")
+            print("Could not connect to Cymruwhois to look up autonomous system.") # Will execute if user does not have an
+            # internet connection
             break
 
     while True:
 
-        main_mask = int(subnet.split("/", 1)[1])
+        main_mask = int(subnet.split("/", 1)[1]) # Strip CIDR mask from main subnet
 
-        print(f"Input a greater than mask length that is larger than {main_mask}.\n")
+        print(f"Input a greater than mask length that is larger than {main_mask}.\n") # Ensure greater than mask is a
+        # larger integer in comparison to the main subnet mask
 
         greater_than_mask = (
             input(f"Input here: "))  # user specifies greater than mask
@@ -95,7 +99,7 @@ def prefix_list_checker():
 
         print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
 
-        less_than_mask = input("Input a less than mask length: ")
+        less_than_mask = input(f"Input a less than mask length that is greater than {greater_than_mask}: ")
 
         try:
             if main_mask > int(less_than_mask):
@@ -109,39 +113,13 @@ def prefix_list_checker():
         except ValueError:
             print(f"\n{less_than_mask} is not a valid integer!")
 
+    your_prefix_list_is = "Your prefix list is: \n"
     full_statement = f"ip prefix-list TEST permit {subnet} ge {greater_than_mask} le {less_than_mask}\n"
 
+    print(your_prefix_list_is)
     print(full_statement)
 
-    subnet_lists = []
-
-    while True:
-
-        question = input(f"Would you like to see the subnets within {full_statement}? ")
-
-        if question == "yes" or "y":
-
-            potential_subnets = []
-
-        else:
-            break
-
-        try:
-            for x in range(int(greater_than_mask), int(less_than_mask)): # Enumerate parent loop with subnet mask lengths that range from main mask to 32.
-                for i in ipaddress.ip_network(subnet).subnets(new_prefix=x): # Find all potential subnets in main subnet
-                    i = str(i)
-                    print(i)
-                    potential_subnets.append(i)
-                    subnet_filename = subnet.replace("/", "-")
-                    file1 = open("subnets-for-%s.txt" % subnet_filename, "w")
-                    file1.writelines('\n'.join(potential_subnets) + '\n')
-                    file1.close()
-            potential_subnets_total = len(potential_subnets)
-            print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
-            print(f"\nThere are a total of {potential_subnets_total} potential subnets within supernet of {subnet}.")
-            break
-        except ValueError:
-            print(f"Cannot generate list of potential subnets encapsulated in {subnet}.")
+    subnet_lists = [] # Empty list for below logic
 
     while True:
 
@@ -149,11 +127,12 @@ def prefix_list_checker():
 
         print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
 
-        if subnet_inputs == "done":
+        if subnet_inputs == "done": # End loop if user types 'done'
+            print(pyprefix_title)
             break
 
         try:
-            ipaddress.ip_network(subnet_inputs)
+            ipaddress.ip_network(subnet_inputs) # Convert inputs of list to ip address value
             subnet_lists.append(subnet_inputs)
         except ValueError:
             print(f"{subnet_inputs} is not a valid subnet with CIDR notation.\n")
@@ -173,7 +152,6 @@ def prefix_list_checker():
             else:
                 print(f"No, {network} does not meet the criteria of {full_statement}\n.")
                 print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
-
 
 if __name__ == "__main__":
     prefix_list_checker()

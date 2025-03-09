@@ -8,7 +8,6 @@ from netaddr import IPNetwork
 import pyfiglet
 import socket
 from cymruwhois import Client
-from pathlib import Path
 
 def prefix_list_checker():
 
@@ -152,6 +151,7 @@ def prefix_list_checker():
             else:
                 print(f"No, {network} does not meet the criteria of {full_statement}\n.")
                 print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+
 
 if __name__ == "__main__":
     prefix_list_checker()
